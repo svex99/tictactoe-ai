@@ -20,6 +20,10 @@ All the results are from 1000 matches of 100 games each, the start player was se
 
    ![](images/q_vs_q.png)
 
+4. As an exception in this case `QPlayer` instances used pre-trained sets, so they had previous knowledge when started to play.
+
+   ![](images/pre_vs_pre.png)
+
 ## Playing vs AI
 
 If you want to play vs a bot, it will be a `QPlayer` and will load a pre-trained set of states conveniently.

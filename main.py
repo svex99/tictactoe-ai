@@ -106,6 +106,64 @@ def human_game(type_X: str, type_O: str):
     play_game(board, player_X, player_O)
 
 
+def pre_vs_pre():
+    """
+    Run this method only if you want to visaulize the game result between two
+    QPlayer instances using pretrained sets.
+    Image found in `images/pre_vs_pre.png` shows the result.
+    """
+    matches = 1000
+    games_per_match = 100
+
+    won_X = [0 for _ in range(matches + 1)]
+    won_O = [0 for _ in range(matches + 1)]
+    draws = [0 for _ in range(matches + 1)]
+
+    board = Board()
+    player_X = QPlayer('X', states_json='pre_trained_X.json')
+    player_O = QPlayer('O', states_json='pre_trained_O.json')
+
+    # Simulate (matches * games_per_match) games
+    for i in range(1, matches + 1):
+        winnings_X = 0
+        winnings_O = 0
+        match_draws = 0
+
+        for _ in range(games_per_match):
+            result = play_game(board, player_X, player_O)
+
+            if result == 'draw':
+                match_draws += 1
+            elif result == 'X':
+                winnings_X += 1
+            else:
+                winnings_O += 1
+
+        won_X[i] = won_X[i-1] + winnings_X
+        won_O[i] = won_O[i-1] + winnings_O
+        draws[i] = draws[i-1] + match_draws
+
+    # Plotting results
+    colors = ('r', 'b', 'g')
+    labels = (
+        f'{player_X.symbol}-{player_X.__class__.__name__}',
+        f'{player_O.symbol}-{player_O.__class__.__name__}',
+        'Draws',
+    )
+    values = (won_X, won_O, draws)
+
+    for l, c, v in zip(labels, colors, values):
+        plt.plot(list(range(matches + 1)), v, color=c, label=l)
+
+    plt.title(f'Winnings in {matches} matches of {games_per_match} games each.')
+    plt.xlabel('Match number')
+    plt.ylabel('Total winnings')
+    leg = plt.legend(loc='upper center', ncol=3, mode="expand", shadow=True, fancybox=True)
+    leg.get_frame().set_alpha(0.5)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     from argparse import ArgumentParser
 
